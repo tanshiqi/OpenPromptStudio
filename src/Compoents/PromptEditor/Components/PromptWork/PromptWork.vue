@@ -1,6 +1,54 @@
 <!-- Created on 2023/03/20 - 18:43 -->
 <template>
     <div class="PromptWork" :class="{ isPNGExporting }" @click="onWorkClick">
+        <div class="main" ref="main">
+            <div
+                class="PromptListArea Area"
+                :class="[promptWork.groups.length <= 1 ? 'noGroup' : 'hasGroup']"
+                @contextmenu.prevent
+            >
+                <div class="PromptGroup" v-for="group in promptWork.groups">
+                    <div class="PromptGroupTitle" v-if="promptWork.groups.length > 1">
+                        <div class="name">
+                            <input value="权重组" /> <span v-if="group.name">{{ group.name }}</span>
+                            <span class="groupLv" v-if="group.groupLv && group.groupLv != 1">{{ group.groupLv }}</span>
+                        </div>
+                    </div>
+                    <PromptList
+                        v-for="promptList in group.lists"
+                        :key="promptList.data.id"
+                        :list="promptList"
+                        @update="doExportPrompt()"
+                    >
+                        <div class="name-bar">
+                            <div class="name" :class="[`type-${promptList.data.id}`]" :title="promptList.data.name">
+                                <span class="content">{{ promptList.data.name ?? promptList.data.id }}</span>
+                            </div>
+                        </div>
+                        <div
+                            class="list PromptList-list"
+                            @dblclick="
+                                onPromptListDblick($event, promptList, {
+                                    group: group.id,
+                                    lv: group.groupLv,
+                                    subType: promptList.data.id,
+                                })
+                            "
+                        >
+                            <PromptItem
+                                @click="onItemClick(item)"
+                                @update="onItemUpdate(item)"
+                                @contextmenu="doOpenItemMenu($event, promptList)"
+                                v-for="item in promptList.items"
+                                :item="item"
+                                :list="promptList"
+                                :key="item.data.word.id"
+                            />
+                        </div>
+                    </PromptList>
+                </div>
+            </div>
+        </div>
         <div class="AddArea Area">
             <div class="WorkInfoArea Area">
                 <div class="WorkName"><input type="text" v-model="promptWork.data.name" /></div>
@@ -70,64 +118,20 @@
                 </div>
             </div>
         </div>
-        <div class="main" ref="main">
-            <div
-                class="PromptListArea Area"
-                :class="[promptWork.groups.length <= 1 ? 'noGroup' : 'hasGroup']"
-                @contextmenu.prevent
-            >
-                <div class="PromptGroup" v-for="group in promptWork.groups">
-                    <div class="PromptGroupTitle" v-if="promptWork.groups.length > 1">
-                        <div class="name">
-                            <input value="权重组" /> <span v-if="group.name">{{ group.name }}</span>
-                            <span class="groupLv" v-if="group.groupLv && group.groupLv != 1">{{ group.groupLv }}</span>
-                        </div>
-                    </div>
-                    <PromptList
-                        v-for="promptList in group.lists"
-                        :key="promptList.data.id"
-                        :list="promptList"
-                        @update="doExportPrompt()"
-                    >
-                        <div class="name-bar">
-                            <div class="name" :class="[`type-${promptList.data.id}`]" :title="promptList.data.name">
-                                <span class="content">{{ promptList.data.name ?? promptList.data.id }}</span>
-                            </div>
-                        </div>
-                        <div
-                            class="list PromptList-list"
-                            @dblclick="
-                                onPromptListDblick($event, promptList, {
-                                    group: group.id,
-                                    lv: group.groupLv,
-                                    subType: promptList.data.id,
-                                })
-                            "
-                        >
-                            <PromptItem
-                                @click="onItemClick(item)"
-                                @update="onItemUpdate(item)"
-                                @contextmenu="doOpenItemMenu($event, promptList)"
-                                v-for="item in promptList.items"
-                                :item="item"
-                                :list="promptList"
-                                :key="item.data.word.id"
-                            />
-                        </div>
-                    </PromptList>
-                </div>
-            </div>
-        </div>
         <PromptMenu ref="menu"></PromptMenu>
     </div>
 </template>
 <style lang="scss">
 .PromptEditor .PromptWork {
     padding: var(--padding-4) 0;
-    --margin-left: 80px;
+    // --margin-left: 80px;
     border-bottom: 1px solid #d7d7d7;
     box-shadow: 0 1px 0 #ffffffeb;
     display: flex;
+
+    .main {
+        flex: auto;
+    }
 
     .PromptGroup {
         .PromptGroupTitle {
