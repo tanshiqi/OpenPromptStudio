@@ -124,7 +124,7 @@
 <style lang="scss">
 .PromptEditor .PromptWork {
     padding: var(--padding-4) 0;
-    // --margin-left: 80px;
+    --margin-left: 50px;
     border-bottom: 1px solid #d7d7d7;
     box-shadow: 0 1px 0 #ffffffeb;
     display: flex;
@@ -263,7 +263,7 @@
         flex-direction: column;
         flex: none;
         width: 320px;
-        margin-left: 20px;
+        margin-right: 20px;
 
         > * {
             transition: all 0.2s ease;
