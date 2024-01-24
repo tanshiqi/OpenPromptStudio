@@ -15,7 +15,8 @@ export async function fetchFromNotion(options: { apiKey: string; databaseId: str
 
     const notion = new Client({
         auth: apiKey,
-        baseUrl: `https://cloudy-toad-cors-dgvpb2704n30.deno.dev/https://api.notion.com`,
+        // baseUrl: `https://cloudy-toad-cors-dgvpb2704n30.deno.dev/https://api.notion.com`,
+        baseUrl: `https://cors.ledo.world/https://api.notion.com`,
     })
 
     let i = 0
